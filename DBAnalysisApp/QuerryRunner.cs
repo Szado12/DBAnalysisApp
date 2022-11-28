@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
@@ -59,7 +60,25 @@ namespace DBAnalysisApp
 
     private static void BackupDatabase(string connectionString)
     {
-
+      var backupPath = "";
+      var destPath = "";
+      ExecuteCommand("docker stop local-mosaic-database3");
+      System.IO.File.Copy(backupPath,destPath);
+      ExecuteCommand("docker start local-mosaic-database3");
+      while (true)
+      {
+        try
+        {
+          var connection = new OracleConnection(connectionString);
+          connection.Open();
+          connection.Close();
+          break;
+        }
+        catch (Exception e)
+        {
+          Thread.Sleep(5000);
+        }
+      }
     }
 
     public static double RunAllForQuerry(string fileName, string connectionString, bool lastOperationNotChangedDb)
@@ -79,5 +98,17 @@ namespace DBAnalysisApp
         return time;
       }
     }
+    public static void ExecuteCommand(string Command)
+    {
+      ProcessStartInfo ProcessInfo;
+      Process Process;
+
+      ProcessInfo = new ProcessStartInfo("cmd.exe", "/K " + Command);
+      ProcessInfo.CreateNoWindow = true;
+      ProcessInfo.UseShellExecute = true;
+
+      Process = Process.Start(ProcessInfo);
+    }
+
   }
 }
