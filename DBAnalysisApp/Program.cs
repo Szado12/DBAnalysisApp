@@ -16,13 +16,13 @@ for (int i=0; i< numberOfTests; i++)
   string previous = null;
   foreach (string file in files)
   {
-    times[file].Add(QuerryRunner.RunAllForQuerry($"D:\\GitHub\\DBAnalysisApp\\DBAnalysisApp\\Query\\{file}.sql", connString, previous?.Contains("select") ?? true));
+    times[file].Add(QuerryRunner.RunAllForQuerry($"..\\..\\..\\Query\\{file}.sql", connString, previous?.Contains("select") ?? true));
     previous = file;
   }
  
 }
 
-using StreamWriter outputfile = new($"times.txt");
+using StreamWriter outputfile = new($"..\\..\\..\\Results\\times.txt");
 foreach (string file in files)
 {
   outputfile.WriteLine($"{file}:");

@@ -1,0 +1,64 @@
+Plan hash value: 2001048027
+ 
+-----------------------------------------------------------------
+| Id  | Operation                  | Name          | Cost (%CPU)|
+-----------------------------------------------------------------
+|   0 | DELETE STATEMENT           |               |  1850   (1)|
+|   1 |  DELETE                    | ORDER_DETAILS |            |
+|*  2 |   HASH JOIN RIGHT SEMI     |               |  1850   (1)|
+|   3 |    VIEW                    | VW_NSO_1      |  1403   (1)|
+|*  4 |     HASH JOIN RIGHT SEMI   |               |  1403   (1)|
+|*  5 |      TABLE ACCESS FULL     | EMPLOYEES     |     5   (0)|
+|*  6 |      HASH JOIN             |               |  1398   (1)|
+|   7 |       VIEW                 |               |   715   (1)|
+|*  8 |        FILTER              |               |            |
+|   9 |         SORT GROUP BY      |               |   715   (1)|
+|* 10 |          HASH JOIN         |               |   713   (1)|
+|* 11 |           TABLE ACCESS FULL| CLIENTS       |    30   (0)|
+|  12 |           TABLE ACCESS FULL| ORDERS        |   683   (1)|
+|  13 |       TABLE ACCESS FULL    | ORDERS        |   683   (1)|
+|  14 |    TABLE ACCESS FULL       | ORDER_DETAILS |   446   (1)|
+-----------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   2 - access("ORDER_ID"="ORDER_ID")
+   4 - access("EMPL"."EMPLOYEE_ID"="O"."SELLER_ID")
+   5 - filter("EMPL"."IS_ARCHIVED"='1')
+   6 - access("O"."CLIENT_ID"="C"."CLIENT_ID")
+   8 - filter(ADD_MONTHS(MAX("REALISATION_DATE"),60)<SYSDATE@!)
+  10 - access("ORDERS"."CLIENT_ID"="CLIENTS"."CLIENT_ID")
+  11 - filter("CLIENTS"."CLIENT_TYPE"='PRIVATE')
+Plan hash value: 2645948886
+ 
+-------------------------------------------------------------
+| Id  | Operation                  | Name      | Cost (%CPU)|
+-------------------------------------------------------------
+|   0 | DELETE STATEMENT           |           |  2086   (1)|
+|   1 |  DELETE                    | ORDERS    |            |
+|*  2 |   HASH JOIN RIGHT SEMI     |           |  2086   (1)|
+|   3 |    VIEW                    | VW_NSO_1  |  1403   (1)|
+|*  4 |     HASH JOIN RIGHT SEMI   |           |  1403   (1)|
+|*  5 |      TABLE ACCESS FULL     | EMPLOYEES |     5   (0)|
+|*  6 |      HASH JOIN             |           |  1398   (1)|
+|   7 |       VIEW                 |           |   715   (1)|
+|*  8 |        FILTER              |           |            |
+|   9 |         SORT GROUP BY      |           |   715   (1)|
+|* 10 |          HASH JOIN         |           |   713   (1)|
+|* 11 |           TABLE ACCESS FULL| CLIENTS   |    30   (0)|
+|  12 |           TABLE ACCESS FULL| ORDERS    |   683   (1)|
+|  13 |       TABLE ACCESS FULL    | ORDERS    |   683   (1)|
+|  14 |    TABLE ACCESS FULL       | ORDERS    |   683   (1)|
+-------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   2 - access("ORDER_ID"="ORDER_ID")
+   4 - access("EMPL"."EMPLOYEE_ID"="O"."SELLER_ID")
+   5 - filter("EMPL"."IS_ARCHIVED"='1')
+   6 - access("O"."CLIENT_ID"="C"."CLIENT_ID")
+   8 - filter(ADD_MONTHS(MAX("REALISATION_DATE"),60)<SYSDATE@!)
+  10 - access("ORDERS"."CLIENT_ID"="CLIENTS"."CLIENT_ID")
+  11 - filter("CLIENTS"."CLIENT_TYPE"='PRIVATE')

@@ -56,6 +56,7 @@ FROM
                 O.ORDER_ID = OD.ORDER_ID
                 AND OD.WOOD_TYPE_ID = WT.WOOD_TYPE_ID
                 AND LOWER(O.COMMENTS) LIKE ('%regular customer%')
+                AND WT.IS_ARCHIVED='0'
             GROUP BY O.ORDER_ID, O.ORDER_DATE
         )
         GROUP BY EXTRACT(YEAR FROM OrderDate)

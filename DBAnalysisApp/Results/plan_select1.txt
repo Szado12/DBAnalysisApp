@@ -1,0 +1,39 @@
+Plan hash value: 260133525
+ 
+----------------------------------------------------------------
+| Id  | Operation                 | Name          | Cost (%CPU)|
+----------------------------------------------------------------
+|   0 | SELECT STATEMENT          |               |  5394   (1)|
+|   1 |  SORT ORDER BY            |               |  5394   (1)|
+|*  2 |   HASH JOIN               |               |  4363   (1)|
+|   3 |    VIEW                   |               |  2186   (1)|
+|   4 |     HASH GROUP BY         |               |  2186   (1)|
+|   5 |      VIEW                 |               |  2184   (1)|
+|   6 |       HASH GROUP BY       |               |  2184   (1)|
+|*  7 |        HASH JOIN          |               |  1134   (1)|
+|*  8 |         TABLE ACCESS FULL | WOOD_TYPES    |     3   (0)|
+|*  9 |         HASH JOIN         |               |  1130   (1)|
+|* 10 |          TABLE ACCESS FULL| ORDERS        |   683   (1)|
+|  11 |          TABLE ACCESS FULL| ORDER_DETAILS |   446   (1)|
+|  12 |    VIEW                   |               |  2177   (1)|
+|  13 |     HASH GROUP BY         |               |  2177   (1)|
+|  14 |      VIEW                 |               |  2175   (1)|
+|  15 |       HASH GROUP BY       |               |  2175   (1)|
+|* 16 |        HASH JOIN          |               |  1134   (1)|
+|  17 |         TABLE ACCESS FULL | WOOD_TYPES    |     3   (0)|
+|* 18 |         HASH JOIN         |               |  1130   (1)|
+|* 19 |          TABLE ACCESS FULL| ORDERS        |   683   (1)|
+|  20 |          TABLE ACCESS FULL| ORDER_DETAILS |   446   (1)|
+----------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   2 - access("M"."YR"="Y"."YR")
+   7 - access("OD"."WOOD_TYPE_ID"="WT"."WOOD_TYPE_ID")
+   8 - filter("WT"."IS_ARCHIVED"='0')
+   9 - access("O"."ORDER_ID"="OD"."ORDER_ID")
+  10 - filter(LOWER("O"."COMMENTS") LIKE '%regular customer%')
+  16 - access("OD"."WOOD_TYPE_ID"="WT"."WOOD_TYPE_ID")
+  18 - access("O"."ORDER_ID"="OD"."ORDER_ID")
+  19 - filter(LOWER("O"."COMMENTS") LIKE '%regular customer%')

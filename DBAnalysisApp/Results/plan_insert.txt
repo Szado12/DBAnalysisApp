@@ -1,0 +1,137 @@
+Plan hash value: 171401187
+ 
+------------------------------------------------------------------
+| Id  | Operation                   | Name          | Cost (%CPU)|
+------------------------------------------------------------------
+|   0 | INSERT STATEMENT            |               |  8103   (1)|
+|   1 |  LOAD TABLE CONVENTIONAL    | WOOD_TYPES    |            |
+|   2 |   SORT AGGREGATE            |               |            |
+|   3 |    TABLE ACCESS FULL        | WOOD_TYPES    |     3   (0)|
+|   4 |   COUNT                     |               |            |
+|*  5 |    HASH JOIN                |               |  8100   (1)|
+|*  6 |     HASH JOIN               |               |  8089   (1)|
+|*  7 |      HASH JOIN              |               |  1655   (2)|
+|   8 |       VIEW                  | VW_NSO_2      |  1652   (2)|
+|*  9 |        SORT GROUP BY        |               |  1652   (2)|
+|* 10 |         HASH JOIN           |               |  1642   (1)|
+|  11 |          TABLE ACCESS FULL  | WOOD_TYPES    |     3   (0)|
+|* 12 |          HASH JOIN          |               |  1638   (1)|
+|* 13 |           TABLE ACCESS FULL | ORDERS        |   684   (1)|
+|  14 |           TABLE ACCESS FULL | ORDER_DETAILS |   446   (1)|
+|  15 |       TABLE ACCESS FULL     | WOOD_TYPES    |     3   (0)|
+|  16 |      VIEW                   |               |  6434   (1)|
+|  17 |       SORT GROUP BY         |               |  6434   (1)|
+|* 18 |        HASH JOIN            |               |  6432   (1)|
+|  19 |         VIEW                |               |  2025   (1)|
+|  20 |          SORT GROUP BY      |               |  2025   (1)|
+|* 21 |           HASH JOIN         |               |   450   (1)|
+|* 22 |            TABLE ACCESS FULL| WOOD_TYPES    |     3   (0)|
+|  23 |            TABLE ACCESS FULL| ORDER_DETAILS |   446   (1)|
+|  24 |         VIEW                |               |  3777   (1)|
+|  25 |          SORT GROUP BY      |               |  3777   (1)|
+|* 26 |           HASH JOIN         |               |   450   (1)|
+|* 27 |            TABLE ACCESS FULL| WOOD_TYPES    |     3   (0)|
+|  28 |            TABLE ACCESS FULL| ORDER_DETAILS |   446   (1)|
+|  29 |     VIEW                    | VW_NSO_1      |    11  (19)|
+|  30 |      SORT UNIQUE            |               |    11  (19)|
+|* 31 |       FILTER                |               |            |
+|  32 |        SORT GROUP BY        |               |    11  (19)|
+|* 33 |         HASH JOIN           |               |    10  (10)|
+|  34 |          VIEW               |               |     4  (25)|
+|  35 |           SORT GROUP BY     |               |     4  (25)|
+|  36 |            TABLE ACCESS FULL| STORED_WOOD   |     3   (0)|
+|* 37 |          HASH JOIN          |               |     6   (0)|
+|* 38 |           TABLE ACCESS FULL | STORAGES      |     3   (0)|
+|  39 |           TABLE ACCESS FULL | STORED_WOOD   |     3   (0)|
+------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   5 - access("WT"."WOOD_TYPE_ID"="WOOD_TYPE_ID")
+   6 - access("WOOD_INCREASE"."WOOD_TYPE_ID"="WT"."WOOD_TYPE_ID")
+   7 - access("WT"."WOOD_TYPE_ID"="WOOD_TYPE_ID")
+   9 - filter(COUNT("O"."ORDER_ID")>100)
+  10 - access("WT"."WOOD_TYPE_ID"="OD"."WOOD_TYPE_ID")
+  12 - access("O"."ORDER_ID"="OD"."ORDER_ID")
+  13 - filter("O"."REALISATION_DATE">ADD_MONTHS(SYSDATE@!,(-120)))
+  18 - access("SWO"."ORDER_ID"="AWO"."ORDER_ID")
+       filter("SWO"."WOOD_PRICE"/"AWO"."WOOD_PRICE">5.0E-001D)
+  21 - access("WT"."WOOD_TYPE_ID"="OD"."WOOD_TYPE_ID")
+  22 - filter("WT"."IS_ARCHIVED"='0')
+  26 - access("WT"."WOOD_TYPE_ID"="OD"."WOOD_TYPE_ID")
+  27 - filter("WT"."IS_ARCHIVED"='0')
+  31 - filter(SUM("SW"."AMOUNT")<SUM("AVG_ALL"."AVG_AMONUT"))
+  33 - access("SW"."STORAGE_ID"="AVG_ALL"."STORAGE_ID")
+  37 - access("SW"."STORAGE_ID"="S"."STORAGE_ID")
+  38 - filter("S"."CAPACITY">9.0E+003D)
+Plan hash value: 32530231
+ 
+-------------------------------------------------------------------
+| Id  | Operation                    | Name          | Cost (%CPU)|
+-------------------------------------------------------------------
+|   0 | UPDATE STATEMENT             |               |  8106   (1)|
+|   1 |  UPDATE                      | WOOD_TYPES    |            |
+|*  2 |   HASH JOIN SEMI             |               |  8106   (1)|
+|   3 |    TABLE ACCESS FULL         | WOOD_TYPES    |     3   (0)|
+|   4 |    VIEW                      | VW_NSO_3      |  8103   (1)|
+|*  5 |     HASH JOIN SEMI           |               |  8103   (1)|
+|*  6 |      HASH JOIN SEMI          |               |  8089   (1)|
+|*  7 |       HASH JOIN              |               |  1655   (2)|
+|   8 |        VIEW                  | VW_NSO_2      |  1652   (2)|
+|*  9 |         SORT GROUP BY        |               |  1652   (2)|
+|* 10 |          HASH JOIN           |               |  1642   (1)|
+|  11 |           TABLE ACCESS FULL  | WOOD_TYPES    |     3   (0)|
+|* 12 |           HASH JOIN          |               |  1638   (1)|
+|* 13 |            TABLE ACCESS FULL | ORDERS        |   684   (1)|
+|  14 |            TABLE ACCESS FULL | ORDER_DETAILS |   446   (1)|
+|  15 |        TABLE ACCESS FULL     | WOOD_TYPES    |     3   (0)|
+|  16 |       VIEW                   |               |  6434   (1)|
+|  17 |        SORT GROUP BY         |               |  6434   (1)|
+|* 18 |         HASH JOIN            |               |  6432   (1)|
+|  19 |          VIEW                |               |  2025   (1)|
+|  20 |           SORT GROUP BY      |               |  2025   (1)|
+|* 21 |            HASH JOIN         |               |   450   (1)|
+|* 22 |             TABLE ACCESS FULL| WOOD_TYPES    |     3   (0)|
+|  23 |             TABLE ACCESS FULL| ORDER_DETAILS |   446   (1)|
+|  24 |          VIEW                |               |  3777   (1)|
+|  25 |           SORT GROUP BY      |               |  3777   (1)|
+|* 26 |            HASH JOIN         |               |   450   (1)|
+|* 27 |             TABLE ACCESS FULL| WOOD_TYPES    |     3   (0)|
+|  28 |             TABLE ACCESS FULL| ORDER_DETAILS |   446   (1)|
+|  29 |      VIEW                    | VW_NSO_1      |    14  (15)|
+|* 30 |       FILTER                 |               |            |
+|  31 |        SORT GROUP BY         |               |    14  (15)|
+|* 32 |         HASH JOIN            |               |    13   (8)|
+|  33 |          VIEW                |               |     4  (25)|
+|  34 |           SORT GROUP BY      |               |     4  (25)|
+|  35 |            TABLE ACCESS FULL | STORED_WOOD   |     3   (0)|
+|* 36 |          HASH JOIN           |               |     9   (0)|
+|  37 |           TABLE ACCESS FULL  | WOOD_TYPES    |     3   (0)|
+|* 38 |           HASH JOIN          |               |     6   (0)|
+|* 39 |            TABLE ACCESS FULL | STORAGES      |     3   (0)|
+|  40 |            TABLE ACCESS FULL | STORED_WOOD   |     3   (0)|
+-------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   2 - access("WOOD_TYPE_ID"="WOOD_TYPE_ID")
+   5 - access("WT"."WOOD_TYPE_ID"="WOOD_TYPE_ID")
+   6 - access("WOOD_INCREASE"."WOOD_TYPE_ID"="WT"."WOOD_TYPE_ID")
+   7 - access("WT"."WOOD_TYPE_ID"="WOOD_TYPE_ID")
+   9 - filter(COUNT("O"."ORDER_ID")>100)
+  10 - access("WT"."WOOD_TYPE_ID"="OD"."WOOD_TYPE_ID")
+  12 - access("O"."ORDER_ID"="OD"."ORDER_ID")
+  13 - filter("O"."REALISATION_DATE">ADD_MONTHS(SYSDATE@!,(-120)))
+  18 - access("SWO"."ORDER_ID"="AWO"."ORDER_ID")
+       filter("SWO"."WOOD_PRICE"/"AWO"."WOOD_PRICE">5.0E-001D)
+  21 - access("WT"."WOOD_TYPE_ID"="OD"."WOOD_TYPE_ID")
+  22 - filter("WT"."IS_ARCHIVED"='0')
+  26 - access("WT"."WOOD_TYPE_ID"="OD"."WOOD_TYPE_ID")
+  27 - filter("WT"."IS_ARCHIVED"='0')
+  30 - filter(SUM("SW"."AMOUNT")<SUM("AVG_ALL"."AVG_AMONUT"))
+  32 - access("SW"."STORAGE_ID"="AVG_ALL"."STORAGE_ID")
+  36 - access("SW"."WOOD_TYPE_ID"="WT"."WOOD_TYPE_ID")
+  38 - access("SW"."STORAGE_ID"="S"."STORAGE_ID")
+  39 - filter("S"."CAPACITY">9.0E+003D)

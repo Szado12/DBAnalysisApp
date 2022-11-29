@@ -15,7 +15,7 @@ namespace DBAnalysisApp
     private static void ClearBuffers(OracleConnection connection)
     {
         var command = new OracleCommand("alter system flush buffer_cache", connection);
-        command.ExecuteNonQuery();
+        command.ExecuteReader();
     }
 
     private static double RunQuery(string query, OracleConnection connection)
@@ -27,7 +27,7 @@ namespace DBAnalysisApp
       {
         start = DateTime.Now;
         var command = new OracleCommand(subQuery, connection);
-        command.ExecuteNonQuery();
+        command.ExecuteReader();
         end = DateTime.Now;
         sum += (end - start).TotalMilliseconds;
       }
@@ -37,7 +37,7 @@ namespace DBAnalysisApp
     private static void GetPlans(string query, string fileName, OracleConnection connection)
     {
 
-      using StreamWriter file = new($"plan_{fileName}.txt");
+      using StreamWriter file = new($"..\\..\\..\\Results\\plan_{fileName}.txt");
       foreach (var subQuery in query.Split(';').Where(x=> !String.IsNullOrEmpty(x)))
       {
         var command = new OracleCommand($"EXPLAIN PLAN FOR {subQuery}", connection);
@@ -62,9 +62,9 @@ namespace DBAnalysisApp
     {
       var backupPath = "";
       var destPath = "";
-      ExecuteCommand("docker stop local-mosaic-database3");
+      ExecuteCommand("docker stop Oracle21c-xe");
       System.IO.File.Copy(backupPath,destPath);
-      ExecuteCommand("docker start local-mosaic-database3");
+      ExecuteCommand("docker start Oracle21c-xe");
       while (true)
       {
         try
@@ -84,15 +84,15 @@ namespace DBAnalysisApp
     public static double RunAllForQuerry(string fileName, string connectionString, bool lastOperationNotChangedDb)
     {
       string query = String.Join("\n",System.IO.File.ReadAllLines(fileName));
-      if(!lastOperationNotChangedDb)
-        BackupDatabase(connectionString);
+      //if(!lastOperationNotChangedDb)
+      //  BackupDatabase(connectionString);
 
       using (OracleConnection connection = new OracleConnection(connectionString))
       {
         connection.Open();
-        //ClearBuffers(connection);
+        ClearBuffers(connection);
         GetPlans(query, fileName.Split('\\').Last().Split('.').First(), connection);
-        //ClearBuffers(connection);
+        ClearBuffers(connection);
         var time = RunQuery(query, connection);
         connection.Close();
         return time;

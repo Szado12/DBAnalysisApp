@@ -1,0 +1,38 @@
+Plan hash value: 2906292953
+ 
+------------------------------------------------------------------
+| Id  | Operation                   | Name          | Cost (%CPU)|
+------------------------------------------------------------------
+|   0 | SELECT STATEMENT            |               |  1909   (1)|
+|   1 |  SORT ORDER BY              |               |  1909   (1)|
+|   2 |   HASH GROUP BY             |               |  1909   (1)|
+|*  3 |    HASH JOIN                |               |  1907   (1)|
+|*  4 |     HASH JOIN               |               |  1880   (1)|
+|*  5 |      TABLE ACCESS FULL      | CLIENTS       |    30   (0)|
+|*  6 |      HASH JOIN              |               |  1850   (1)|
+|   7 |       VIEW                  |               |  1166   (1)|
+|*  8 |        HASH GROUP BY        |               |  1166   (1)|
+|*  9 |         HASH JOIN           |               |  1164   (1)|
+|  10 |          TABLE ACCESS FULL  | WOOD_TYPES    |     3   (0)|
+|* 11 |          HASH JOIN          |               |  1160   (1)|
+|* 12 |           HASH JOIN         |               |   713   (1)|
+|* 13 |            TABLE ACCESS FULL| CLIENTS       |    30   (0)|
+|  14 |            TABLE ACCESS FULL| ORDERS        |   683   (1)|
+|  15 |           TABLE ACCESS FULL | ORDER_DETAILS |   446   (1)|
+|* 16 |       TABLE ACCESS FULL     | ORDERS        |   683   (1)|
+|  17 |     TABLE ACCESS FULL       | ADDRESSES     |    27   (0)|
+------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   3 - access("O"."DELIVERY_ADDRESS_ID"="A"."ADDRESS_ID")
+   4 - access("O"."CLIENT_ID"="C"."CLIENT_ID")
+   5 - filter("C"."IS_ARCHIVED"='0')
+   6 - access("ORD"."ORDER_ID"="O"."ORDER_ID")
+   8 - filter(SUM("AMOUNT"*"DENSITY")>2.5E+004D)
+   9 - access("ORD"."WOOD_TYPE_ID"="WT"."WOOD_TYPE_ID")
+  11 - access("O"."ORDER_ID"="ORD"."ORDER_ID")
+  12 - access("O"."CLIENT_ID"="C"."CLIENT_ID")
+  13 - filter("C"."CLIENT_TYPE"='PRIVATE')
+  16 - filter("O"."REALISATION_DATE" IS NOT NULL)
