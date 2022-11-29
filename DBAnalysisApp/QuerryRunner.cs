@@ -63,7 +63,8 @@ namespace DBAnalysisApp
       var backupPath = "";
       var destPath = "";
       ExecuteCommand("docker stop Oracle21c-xe");
-      System.IO.File.Copy(backupPath,destPath);
+      Thread.Sleep(10000);
+      System.IO.File.Copy(backupPath, destPath);
       ExecuteCommand("docker start Oracle21c-xe");
       while (true)
       {
@@ -84,30 +85,28 @@ namespace DBAnalysisApp
     public static double RunAllForQuerry(string fileName, string connectionString, bool lastOperationNotChangedDb)
     {
       string query = String.Join("\n",System.IO.File.ReadAllLines(fileName));
-      //if(!lastOperationNotChangedDb)
-      //  BackupDatabase(connectionString);
+        //if (!lastOperationNotChangedDb)
+        //    BackupDatabase(connectionString);
 
-      using (OracleConnection connection = new OracleConnection(connectionString))
-      {
-        connection.Open();
-        ClearBuffers(connection);
-        GetPlans(query, fileName.Split('\\').Last().Split('.').First(), connection);
-        ClearBuffers(connection);
-        var time = RunQuery(query, connection);
-        connection.Close();
-        return time;
-      }
+        using (OracleConnection connection = new OracleConnection(connectionString))
+        {
+            connection.Open();
+            ClearBuffers(connection);
+            GetPlans(query, fileName.Split('\\').Last().Split('.').First(), connection);
+            ClearBuffers(connection);
+            var time = RunQuery(query, connection);
+            connection.Close();
+            return time;
+        }
     }
     public static void ExecuteCommand(string Command)
     {
-      ProcessStartInfo ProcessInfo;
-      Process Process;
-
-      ProcessInfo = new ProcessStartInfo("cmd.exe", "/K " + Command);
-      ProcessInfo.CreateNoWindow = true;
-      ProcessInfo.UseShellExecute = true;
-
-      Process = Process.Start(ProcessInfo);
+        Process Process = new Process();
+        ProcessStartInfo ProcessInfo = new ProcessStartInfo("cmd.exe", "/K " + Command);
+        ProcessInfo.CreateNoWindow = false;
+        ProcessInfo.UseShellExecute = true;
+        Process.StartInfo = ProcessInfo;
+        Process.Start();
     }
 
   }
