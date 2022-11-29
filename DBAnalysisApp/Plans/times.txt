@@ -1,0 +1,15 @@
+select1:
+Number of runs: 10
+Min time: 2678,4189 ms
+Max time: 6455,6864 ms
+Avg time: 4792,704240000001 ms
+select2:
+Number of runs: 10
+Min time: 205,6032 ms
+Max time: 459,6155 ms
+Avg time: 384,89209 ms
+select3:
+Number of runs: 10
+Min time: 263,7908 ms
+Max time: 871,7621 ms
+Avg time: 493,79580999999996 ms

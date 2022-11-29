@@ -1,0 +1,39 @@
+Plan hash value: 3058896895
+ 
+-----------------------------------------------------------------
+| Id  | Operation                  | Name          | Cost (%CPU)|
+-----------------------------------------------------------------
+|   0 | SELECT STATEMENT           |               |  2821   (1)|
+|   1 |  SORT ORDER BY             |               |  2821   (1)|
+|*  2 |   HASH JOIN                |               |  2820   (1)|
+|*  3 |    HASH JOIN               |               |    11  (10)|
+|   4 |     VIEW                   |               |     6  (17)|
+|   5 |      HASH GROUP BY         |               |     6  (17)|
+|*  6 |       TABLE ACCESS FULL    | EMPLOYEES     |     5   (0)|
+|   7 |     TABLE ACCESS FULL      | EMPLOYEES     |     5   (0)|
+|   8 |    VIEW                    |               |  2809   (1)|
+|   9 |     HASH GROUP BY          |               |  2809   (1)|
+|* 10 |      HASH JOIN             |               |  2807   (1)|
+|  11 |       JOIN FILTER CREATE   | :BF0000       |   688   (1)|
+|* 12 |        HASH JOIN           |               |   688   (1)|
+|* 13 |         TABLE ACCESS FULL  | EMPLOYEES     |     5   (0)|
+|  14 |         TABLE ACCESS FULL  | ORDERS        |   683   (1)|
+|  15 |       VIEW                 |               |  1947   (1)|
+|  16 |        HASH GROUP BY       |               |  1947   (1)|
+|* 17 |         HASH JOIN          |               |   450   (1)|
+|  18 |          TABLE ACCESS FULL | WOOD_TYPES    |     3   (0)|
+|  19 |          JOIN FILTER USE   | :BF0000       |   446   (1)|
+|* 20 |           TABLE ACCESS FULL| ORDER_DETAILS |   446   (1)|
+-----------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   2 - access("AVG_DATA"."MNG_ID"="E1"."MANAGER_ID")
+   3 - access("E"."EMPLOYEE_ID"="E1"."MANAGER_ID")
+   6 - filter("MANAGER_ID" IS NOT NULL AND "IS_ARCHIVED"='0')
+  10 - access("OD"."ORDER_ID"="O"."ORDER_ID")
+  12 - access("O"."SELLER_ID"="EMP"."EMPLOYEE_ID")
+  13 - filter("MANAGER_ID" IS NOT NULL AND "IS_ARCHIVED"='0')
+  17 - access("OD"."WOOD_TYPE_ID"="WT"."WOOD_TYPE_ID")
+  20 - filter(SYS_OP_BLOOM_FILTER(:BF0000,"ORDER_ID"))

@@ -1,0 +1,31 @@
+Plan hash value: 4282768958
+ 
+----------------------------------------------------------------
+| Id  | Operation                 | Name          | Cost (%CPU)|
+----------------------------------------------------------------
+|   0 | SELECT STATEMENT          |               |  1204   (2)|
+|   1 |  SORT ORDER BY            |               |  1204   (2)|
+|   2 |   HASH GROUP BY           |               |  1204   (2)|
+|*  3 |    HASH JOIN              |               |  1202   (2)|
+|*  4 |     HASH JOIN             |               |  1175   (2)|
+|*  5 |      TABLE ACCESS FULL    | CLIENTS       |    30   (0)|
+|*  6 |      HASH JOIN            |               |  1144   (2)|
+|   7 |       VIEW                |               |   461   (4)|
+|*  8 |        HASH GROUP BY      |               |   461   (4)|
+|*  9 |         HASH JOIN         |               |   450   (1)|
+|  10 |          TABLE ACCESS FULL| WOOD_TYPES    |     3   (0)|
+|  11 |          TABLE ACCESS FULL| ORDER_DETAILS |   446   (1)|
+|* 12 |       TABLE ACCESS FULL   | ORDERS        |   683   (1)|
+|  13 |     TABLE ACCESS FULL     | ADDRESSES     |    27   (0)|
+----------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   3 - access("O"."DELIVERY_ADDRESS_ID"="A"."ADDRESS_ID")
+   4 - access("O"."CLIENT_ID"="C"."CLIENT_ID")
+   5 - filter("C"."IS_ARCHIVED"='0')
+   6 - access("ORD"."ORDER_ID"="O"."ORDER_ID")
+   8 - filter(SUM("AMOUNT"*"DENSITY")>2.5E+004D)
+   9 - access("ORD"."WOOD_TYPE_ID"="WT"."WOOD_TYPE_ID")
+  12 - filter("O"."REALISATION_DATE" IS NOT NULL)
